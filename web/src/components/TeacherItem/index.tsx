@@ -3,35 +3,60 @@ import React from 'react';
 import './styles.css'
 
 import whatsappIcon from '../../assets/icons/whatsapp.svg'
+import api from '../../services/api';
 
-const TeacherItem: React.FC = () => {
+
+export interface Teacher {
+  id: number;
+  avatar: string;
+  bio: string;
+  cost: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
+}
+
+
+interface TeacherItemProps {
+  teacher: Teacher;
+}
+
+
+const TeacherItem: React.FC<TeacherItemProps> = ( { teacher } ) => {
+  function createNewConnection() {
+    api.post('connections', {
+      user_id: teacher.id,
+    })
+  }
+
+
   return (
         <article className="teacher-item">
           <header>
-            <img src="https://avatars3.githubusercontent.com/u/44098728?s=460&u=8ba621114d195ac7562ba67e10e223ac1363d96f&v=4" alt="Gabriel Figueredo"/>
+            <img src={teacher.avatar} alt={teacher.name}/>
             <div>
               <strong>
-                Gabriel Figueiredo
-                <span>Física</span>
+                {teacher.name}
+                <span>{teacher.subject}</span>
               </strong>
             </div>
           </header>
 
-          <p>
-            Entusiasta das melhores tecnologias.
-            <br/>
-            Apaixonado por física ja lançou 50 Falcon 9 em nome da SpaceX. 2 Astronautas para a Lua e uma colônia em Marte.
-          </p>
+          <p>{teacher.bio}</p>
 
           <footer>
             <p>
               Preço/hora
-              <strong>R$500,00</strong>
+              <strong>R$ {teacher.cost}</strong>
             </p>
-            <button type="button">
+            <a 
+              target="_blank"
+              onClick={ createNewConnection } 
+              href={`https://wa.me/${teacher.whatsapp}`}
+             >
               <img src={whatsappIcon} alt="Whatsapp"/>
               Entrar em contato
-            </button>
+            </a>
           </footer>
         </article>
   );
